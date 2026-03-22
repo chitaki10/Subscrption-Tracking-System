@@ -1,12 +1,7 @@
-import mongoose from "mongoose";
+import dotenv from 'dotenv';
 
-const uri = "YOUR_DB_URI";
-
-mongoose.connect(uri)
-.then(() => {
-  console.log("MongoDB connected");
-  process.exit();
-})
-.catch(err => {
-  console.error(err);
+dotenv.config({
+  path: '.env.development.local'
 });
+
+console.log(process.env.JWT_SECRET);
