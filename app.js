@@ -1,7 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { PORT } from './config/env.js';
-
 import userRouter from './routes/user.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
 import authRouter from './routes/auth.routes.js';
@@ -17,16 +16,25 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.send('Welcome to the Subscription Tracker API');
 });
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/subscriptions', subscriptionRouter);
 app.use('/api/v1/auth', authRouter);
 
 app.use(errorMiddleware);
 
-connectToDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Subscription Tracker API is running on http://localhost:${PORT}`);
-  });
-});
+const startServer = async () => {
+  try {
+    await connectToDatabase();
+    app.listen(PORT, () => {
+      console.log(`Subscription Tracker API is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Server startup failed:', error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;
